@@ -10,7 +10,6 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven { url = uri("https://mvn.dev/rikka") }
     }
 }
 rootProject.name = "Elysium Vanguard One Tap Boost"
