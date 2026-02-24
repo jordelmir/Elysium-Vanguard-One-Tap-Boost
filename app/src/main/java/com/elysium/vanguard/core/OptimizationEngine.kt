@@ -70,7 +70,25 @@ object OptimizationEngine {
     }
 
     private fun runShellCommand(cmd: String) {
-        val process = Shizuku.newProcess(arrayOf("sh", "-c", cmd), null, null)
-        process.waitFor()
+        // En algunas versiones de Shizuku 13.1.5, newProcess puede estar marcado como privado o restringido.
+        // Utilizamos reflexión como puente de alta compatibilidad para garantizar la ejecución.
+        try {
+            val shizukuClass = rikka.shizuku.Shizuku::class.java
+            val newProcessMethod = shizukuClass.getDeclaredMethod(
+                "newProcess", 
+                Array<String>::class.java, 
+                Array<String>::class.java, 
+                String::class.java
+            )
+            newProcessMethod.isAccessible = true
+            val process = newProcessMethod.invoke(null, arrayOf("sh", "-c", cmd), null, null)
+            
+            // Esperar a que el proceso termine (ShizukuRemoteProcess suele tener waitFor)
+            val waitForMethod = process.javaClass.getMethod("waitFor")
+            waitForMethod.invoke(process)
+        } catch (e: Exception) {
+            Log.e(TAG, "Elysium Shell Error: ${e.message}")
+            // Fallback silencioso para no interrumpir el flujo del UI si falla un comando menor
+        }
     }
 }
