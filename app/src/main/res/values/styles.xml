@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.ElysiumVanguard" parent="Theme.Material3.Dark.NoActionBar">
+    <style name="Theme.ElysiumVanguard" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">#00F2FF</item>
         <item name="android:statusBarColor">#0F111A</item>
         <item name="android:navigationBarColor">#0F111A</item>
