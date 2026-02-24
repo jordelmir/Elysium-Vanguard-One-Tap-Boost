@@ -1,0 +1,9 @@
+*.apk
+.gradle/
+build/
+app/build/
+local.properties
+.DS_Store
+*.log
+build_pid.txt
+gradle_debug_backup/
