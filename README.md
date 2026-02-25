@@ -37,5 +37,11 @@
 | **GPU** | SurfaceFlinger / HW Overlays | Ultra |
 | **Kernel** | Fixed Perf / Thermal Shield | Extreme |
 
+## 🏛 Credits
+
+- **Principal Architect & Product Lead**: [jordelmir](https://github.com/jordelmir)
+- **Primary AI Development Partner**: **Antigravity** (Google DeepMind Advanced Engineering)
+- **Core Frameworks**: [Shizuku](https://shizuku.rikka.app/), [Jetpack Compose](https://developer.android.com/jetpack/compose)
+
 ---
-*Developed with professionalism by Antigravity Design.*
+*Developed with elite precision by the Elysium Vanguard Team.*
