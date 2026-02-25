@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.elysium.vanguard"
+    namespace = "com.elysium.vanguard.boost"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.elysium.vanguard"
+        applicationId = "com.elysium.vanguard.boost"
         minSdk = 26
         targetSdk = 35
         versionCode = 1

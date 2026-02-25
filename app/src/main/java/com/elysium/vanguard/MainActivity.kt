@@ -1,4 +1,4 @@
-package com.elysium.vanguard
+package com.elysium.vanguard.boost.boost
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -14,9 +14,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.elysium.vanguard.core.OptimizationEngine
-import com.elysium.vanguard.ui.components.HexagonButton
-import com.elysium.vanguard.ui.theme.*
+import com.elysium.vanguard.boost.boost.core.OptimizationEngine
+import com.elysium.vanguard.boost.boost.ui.components.HexagonButton
+import com.elysium.vanguard.boost.boost.ui.theme.*
 import rikka.shizuku.Shizuku
 
 class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListener {

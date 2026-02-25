@@ -1,4 +1,4 @@
-package com.elysium.vanguard.ui.components
+package com.elysium.vanguard.boost.boost.ui.components
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.graphics.drawscope.DrawStyle
 import androidx.compose.ui.graphics.drawscope.Fill
-import com.elysium.vanguard.ui.theme.*
+import com.elysium.vanguard.boost.boost.ui.theme.*
 import kotlin.math.cos
 import kotlin.math.sin
 

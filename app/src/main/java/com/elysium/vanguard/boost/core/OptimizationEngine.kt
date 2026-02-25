@@ -1,4 +1,4 @@
-package com.elysium.vanguard.core
+package com.elysium.vanguard.boost.boost.core
 
 import android.os.Build
 import android.util.Log

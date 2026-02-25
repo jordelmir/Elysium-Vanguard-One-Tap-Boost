@@ -1,4 +1,4 @@
-package com.elysium.vanguard.ui.theme
+package com.elysium.vanguard.boost.boost.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
