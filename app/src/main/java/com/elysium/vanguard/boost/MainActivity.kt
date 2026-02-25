@@ -115,6 +115,7 @@ fun SetupGuideScreen(onContinue: () -> Unit) {
                 context.packageManager.getPackageInfo("moe.shizuku.privileged.api", 0); true
             } catch (e: Exception) { false }
             shizukuConnected = try {
+                rikka.shizuku.Shizuku.pingBinder() &&
                 rikka.shizuku.Shizuku.checkSelfPermission() == android.content.pm.PackageManager.PERMISSION_GRANTED
             } catch (e: Exception) { false }
             delay(2000)
@@ -232,6 +233,7 @@ fun DashboardScreen(onBack: () -> Unit) {
     LaunchedEffect(Unit) {
         while (true) {
             shizukuConnected = try {
+                rikka.shizuku.Shizuku.pingBinder() &&
                 rikka.shizuku.Shizuku.checkSelfPermission() == android.content.pm.PackageManager.PERMISSION_GRANTED
             } catch (e: Exception) { false }
             delay(2000)
