@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Outer Hexagon Glow Ring — Cyan -->
+    <path
+        android:pathData="M54,12 L87.5,31 L87.5,69 L54,88 L20.5,69 L20.5,31 Z"
+        android:strokeWidth="2.5"
+        android:strokeColor="#4000F2FF"
+        android:fillColor="#00000000"/>
+
+    <!-- Inner Hexagon — Main Shape -->
+    <path
+        android:pathData="M54,18 L83,34.5 L83,67.5 L54,84 L25,67.5 L25,34.5 Z"
+        android:strokeWidth="1.5"
+        android:strokeColor="#00F2FF"
+        android:fillColor="#1A1D2E"/>
+
+    <!-- Subtle Inner Border Hexagon -->
+    <path
+        android:pathData="M54,24 L78,38 L78,64 L54,78 L30,64 L30,38 Z"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF"
+        android:fillColor="#00000000"/>
+
+    <!-- Central Letter "E" — Bold Futuristic -->
+    <!-- Top horizontal bar -->
+    <path
+        android:pathData="M40,36 L68,36 L68,41 L40,41 Z"
+        android:fillColor="#00F2FF"/>
+
+    <!-- Middle horizontal bar (shorter) -->
+    <path
+        android:pathData="M40,49 L63,49 L63,54 L40,54 Z"
+        android:fillColor="#FF00E5"/>
+
+    <!-- Bottom horizontal bar -->
+    <path
+        android:pathData="M40,62 L68,62 L68,67 L40,67 Z"
+        android:fillColor="#00F2FF"/>
+
+    <!-- Vertical bar of the E -->
+    <path
+        android:pathData="M40,36 L46,36 L46,67 L40,67 Z"
+        android:fillColor="#00F2FF"/>
+
+    <!-- Accent corner detail top-right -->
+    <path
+        android:pathData="M65,36 L68,36 L68,42 L65,39 Z"
+        android:fillColor="#8B5CF6"/>
+
+    <!-- Accent corner detail bottom-right -->
+    <path
+        android:pathData="M65,64 L68,67 L68,62 Z"
+        android:fillColor="#8B5CF6"/>
+
+</vector>

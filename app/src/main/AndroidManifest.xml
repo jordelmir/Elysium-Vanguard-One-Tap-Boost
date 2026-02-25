@@ -1,16 +1,26 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <application android:allowBackup="true" android:icon="@mipmap/ic_launcher" android:label="Elysium Vanguard" android:roundIcon="@mipmap/ic_launcher_round" android:supportsRtl="true" android:theme="@style/Theme.ElysiumVanguard">
+    <uses-permission android:name="rikka.shizuku.permission.RECEIVE_QUERY_RESULT" />
+
+    <application android:allowBackup="true" android:icon="@mipmap/ic_launcher" android:label="Elysium Vanguard Boost" android:roundIcon="@mipmap/ic_launcher_round" android:supportsRtl="true" android:theme="@style/Theme.ElysiumVanguard">
+
         <activity android:name="com.elysium.vanguard.boost.MainActivity" android:exported="true" android:theme="@style/Theme.ElysiumVanguard">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider android:name="rikka.shizuku.ShizukuProvider" android:authorities="${applicationId}.shizuku" android:multiprocess="false" android:enabled="true" android:exported="true" android:permission="android.permission.INTERACT_ACROSS_USERS_FULL" />
+
     </application>
 
     <queries>
         <package android:name="moe.shizuku.privileged.api" />
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
     </queries>
 
 </manifest>
