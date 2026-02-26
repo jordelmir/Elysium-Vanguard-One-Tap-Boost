@@ -15,22 +15,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawStyle
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.elysium.vanguard.boost.ui.theme.*
 import kotlin.math.cos
 import kotlin.math.sin
 
-// ═══════════════════════════════════════════
-// ANIMATED GLASS CARD — Breathing border
-// ═══════════════════════════════════════════
 @Composable
 fun GlassCard(
     modifier: Modifier = Modifier,
@@ -38,10 +34,7 @@ fun GlassCard(
     content: @Composable ColumnScope.() -> Unit
 ) {
     val inf = rememberInfiniteTransition()
-    val borderAlpha by inf.animateFloat(
-        initialValue = 0.15f, targetValue = 0.5f,
-        animationSpec = infiniteRepeatable(tween(2500, easing = FastOutSlowInEasing), RepeatMode.Reverse)
-    )
+    val borderAlpha by inf.animateFloat(0.15f, 0.5f, infiniteRepeatable(tween(2500), RepeatMode.Reverse))
 
     Column(
         modifier = modifier
@@ -49,23 +42,18 @@ fun GlassCard(
             .background(SurfaceCard.copy(alpha = 0.65f), RoundedCornerShape(18.dp))
             .border(1.2.dp, borderColor.copy(alpha = borderAlpha), RoundedCornerShape(18.dp))
             .padding(18.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
         content = content
     )
 }
 
-// ═══════════════════════════════════════════
-// NEON BUTTON — Pulsing glow
-// ═══════════════════════════════════════════
 @Composable
 fun NeonButton(
     text: String, onClick: () -> Unit,
     modifier: Modifier = Modifier, color: Color = CyanNeon
 ) {
     val inf = rememberInfiniteTransition()
-    val glow by inf.animateFloat(
-        initialValue = 0.08f, targetValue = 0.25f,
-        animationSpec = infiniteRepeatable(tween(1800), RepeatMode.Reverse)
-    )
+    val glow by inf.animateFloat(0.08f, 0.25f, infiniteRepeatable(tween(1800), RepeatMode.Reverse))
 
     Button(
         onClick = onClick,
@@ -73,20 +61,14 @@ fun NeonButton(
         colors = ButtonDefaults.buttonColors(containerColor = color.copy(alpha = glow)),
         shape = RoundedCornerShape(12.dp)
     ) {
-        Text(text, color = color, fontWeight = FontWeight.Bold, fontSize = 12.sp, letterSpacing = 1.sp)
+        Text(text, color = color, fontWeight = FontWeight.Bold, fontSize = 12.sp, letterSpacing = 1.sp, textAlign = TextAlign.Center)
     }
 }
 
-// ═══════════════════════════════════════════
-// STATUS CHIP — Animated border
-// ═══════════════════════════════════════════
 @Composable
 fun StatusChip(label: String, value: String, color: Color = CyanNeon, modifier: Modifier = Modifier) {
     val inf = rememberInfiniteTransition()
-    val pulse by inf.animateFloat(
-        initialValue = 0.2f, targetValue = 0.7f,
-        animationSpec = infiniteRepeatable(tween(2000), RepeatMode.Reverse)
-    )
+    val pulse by inf.animateFloat(0.2f, 0.7f, infiniteRepeatable(tween(2000), RepeatMode.Reverse))
 
     Column(
         modifier = modifier
@@ -95,24 +77,18 @@ fun StatusChip(label: String, value: String, color: Color = CyanNeon, modifier: 
             .padding(horizontal = 10.dp, vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(label, color = SteelGray, fontSize = 8.sp, letterSpacing = 1.5.sp, fontWeight = FontWeight.Bold)
+        Text(label, color = SteelGray, fontSize = 8.sp, letterSpacing = 1.5.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
         Spacer(Modifier.height(4.dp))
-        Text(value, color = color, fontSize = 14.sp, fontWeight = FontWeight.Black)
+        Text(value, color = color, fontSize = 14.sp, fontWeight = FontWeight.Black, textAlign = TextAlign.Center)
     }
 }
 
-// ═══════════════════════════════════════════
-// SHIZUKU STATUS BADGE — Live indicator
-// ═══════════════════════════════════════════
 @Composable
 fun ShizukuStatusBadge(isConnected: Boolean) {
     val inf = rememberInfiniteTransition()
-    val dotAlpha by inf.animateFloat(
-        initialValue = 0.3f, targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(if (isConnected) 1200 else 600), RepeatMode.Reverse)
-    )
+    val dotAlpha by inf.animateFloat(0.3f, 1f, infiniteRepeatable(tween(if (isConnected) 1200 else 600), RepeatMode.Reverse))
     val color = if (isConnected) ElectricGreen else LaserRed
-    val text = if (isConnected) "SHIZUKU: CONECTADO" else "SHIZUKU: DESCONECTADO"
+    val text = if (isConnected) "SHIZUKU: ACTIVO" else "SHIZUKU: REQUERIDO"
 
     Row(
         modifier = Modifier
@@ -123,20 +99,12 @@ fun ShizukuStatusBadge(isConnected: Boolean) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        Box(
-            Modifier
-                .size(8.dp)
-                .clip(CircleShape)
-                .background(color.copy(alpha = dotAlpha))
-        )
+        Box(Modifier.size(8.dp).clip(CircleShape).background(color.copy(alpha = dotAlpha)))
         Spacer(Modifier.width(10.dp))
-        Text(text, color = color, fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 2.sp)
+        Text(text, color = color, fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 2.sp, textAlign = TextAlign.Center)
     }
 }
 
-// ═══════════════════════════════════════════
-// STEP CARD — Animated entry
-// ═══════════════════════════════════════════
 @Composable
 fun StepCard(
     stepNumber: Int, title: String, description: String,
@@ -144,81 +112,54 @@ fun StepCard(
     content: @Composable ColumnScope.() -> Unit = {}
 ) {
     val inf = rememberInfiniteTransition()
-    val borderAlpha by inf.animateFloat(
-        initialValue = 0.1f, targetValue = 0.4f,
-        animationSpec = infiniteRepeatable(tween(2000 + stepNumber * 300), RepeatMode.Reverse)
-    )
+    val borderAlpha by inf.animateFloat(0.1f, 0.4f, infiniteRepeatable(tween(2000 + stepNumber * 300), RepeatMode.Reverse))
     val accent = if (isCompleted) ElectricGreen else CyanNeon
 
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(SurfaceCard.copy(alpha = 0.5f), RoundedCornerShape(16.dp))
             .border(1.dp, accent.copy(alpha = borderAlpha), RoundedCornerShape(16.dp))
             .padding(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(14.dp)
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
-            modifier = Modifier
-                .size(36.dp).clip(CircleShape)
+            modifier = Modifier.size(36.dp).clip(CircleShape)
                 .background(accent.copy(alpha = 0.12f))
                 .border(1.5.dp, accent.copy(alpha = 0.6f), CircleShape),
             contentAlignment = Alignment.Center
         ) {
-            Text(
-                if (isCompleted) "✓" else "$stepNumber",
-                color = accent, fontSize = 14.sp, fontWeight = FontWeight.Bold
-            )
+            Text(if (isCompleted) "✓" else "$stepNumber", color = accent, fontSize = 14.sp, fontWeight = FontWeight.Bold)
         }
-        Column(modifier = Modifier.weight(1f)) {
-            Text(title, color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Bold, letterSpacing = 0.5.sp)
-            Spacer(Modifier.height(6.dp))
-            Text(description, color = SteelGray, fontSize = 11.sp, lineHeight = 17.sp)
-            Spacer(Modifier.height(12.dp))
-            content()
-        }
+        Spacer(Modifier.height(12.dp))
+        Text(title, color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Bold, letterSpacing = 0.5.sp, textAlign = TextAlign.Center)
+        Spacer(Modifier.height(6.dp))
+        Text(description, color = SteelGray, fontSize = 11.sp, lineHeight = 17.sp, textAlign = TextAlign.Center)
+        Spacer(Modifier.height(16.dp))
+        content()
     }
 }
 
-// ═══════════════════════════════════════════
-// HEXAGON BUTTON — Full glow animation
-// ═══════════════════════════════════════════
 @Composable
 fun HexagonButton(isOptimizing: Boolean, onClick: () -> Unit) {
     val inf = rememberInfiniteTransition()
-    val glowScale by inf.animateFloat(
-        initialValue = 1f, targetValue = 1.15f,
-        animationSpec = infiniteRepeatable(tween(2000, easing = FastOutSlowInEasing), RepeatMode.Reverse)
-    )
-    val rotation by inf.animateFloat(
-        initialValue = 0f, targetValue = 360f,
-        animationSpec = infiniteRepeatable(tween(8000, easing = LinearEasing), RepeatMode.Restart)
-    )
-    val pulseAlpha by inf.animateFloat(
-        initialValue = 0.4f, targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(1200), RepeatMode.Reverse)
-    )
-    val innerGlow by inf.animateFloat(
-        initialValue = 0.05f, targetValue = 0.2f,
-        animationSpec = infiniteRepeatable(tween(3000), RepeatMode.Reverse)
-    )
+    val glowScale by inf.animateFloat(1f, 1.15f, infiniteRepeatable(tween(2000), RepeatMode.Reverse))
+    val rotation by inf.animateFloat(0f, 360f, infiniteRepeatable(tween(8000, easing = LinearEasing), RepeatMode.Restart))
+    val pulseAlpha by inf.animateFloat(0.4f, 1f, infiniteRepeatable(tween(1200), RepeatMode.Reverse))
+    val innerGlow by inf.animateFloat(0.05f, 0.2f, infiniteRepeatable(tween(3000), RepeatMode.Reverse))
 
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.size(260.dp).clickable(onClick = onClick)
     ) {
-        // Outer glow
-        Canvas(modifier = Modifier.size(260.dp * glowScale).blur(45.dp)) {
-            drawHexagon(Brush.sweepGradient(listOf(CyanNeon, ElectricGreen, PlasmaViolet, CyanNeon)), Fill)
+        Canvas(modifier = Modifier.size(260.dp * glowScale)) {
+            drawHexagon(Brush.radialGradient(listOf(CyanNeon.copy(alpha = 0.3f), Color.Transparent)), Fill)
         }
-        // Rotating border
-        Canvas(modifier = Modifier.size(200.dp).graphicsLayer(rotationZ = rotation)) {
-            drawHexagon(Brush.linearGradient(listOf(CyanNeon, ElectricGreen, PlasmaViolet)), Stroke(3.dp.toPx()))
+        Canvas(modifier = Modifier.graphicsLayer { rotationZ = rotation }.size(200.dp)) {
+            drawHexagon(Brush.sweepGradient(listOf(CyanNeon, ElectricGreen, PlasmaViolet, CyanNeon)), Stroke(3.dp.toPx()))
         }
-        // Inner body
         Box(
-            modifier = Modifier
-                .size(160.dp).clip(HexagonShape)
+            modifier = Modifier.size(160.dp).clip(HexagonShape)
                 .background(Brush.verticalGradient(listOf(DeepCharcoal, Obsidian)))
                 .border(1.dp, CyanNeon.copy(alpha = innerGlow), HexagonShape),
             contentAlignment = Alignment.Center
@@ -227,12 +168,12 @@ fun HexagonButton(isOptimizing: Boolean, onClick: () -> Unit) {
                 Text(
                     if (isOptimizing) "⚡" else "V",
                     color = if (isOptimizing) ElectricGreen.copy(alpha = pulseAlpha) else Color.White,
-                    fontSize = 42.sp, fontWeight = FontWeight.Black
+                    fontSize = 42.sp, fontWeight = FontWeight.Black, textAlign = TextAlign.Center
                 )
                 Text(
-                    if (isOptimizing) "EJECUTANDO..." else "HYPER-BOOST",
+                    if (isOptimizing) "PROCESANDO" else "ACCELERATE",
                     color = CyanNeon.copy(alpha = if (isOptimizing) pulseAlpha else 0.9f),
-                    fontSize = 9.sp, fontWeight = FontWeight.Bold, letterSpacing = 2.sp
+                    fontSize = 9.sp, fontWeight = FontWeight.Bold, letterSpacing = 2.sp, textAlign = TextAlign.Center
                 )
             }
         }

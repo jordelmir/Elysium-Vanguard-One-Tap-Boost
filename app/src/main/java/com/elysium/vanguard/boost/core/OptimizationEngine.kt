@@ -9,12 +9,13 @@ object OptimizationEngine {
 
     const val TAG = "ElysiumEngine"
 
-    private val PHASE_ANIMATIONS = listOf(
+    // ═══ BOOST SETTINGS ═══
+    private val PHASE_ANIMATIONS_BOOST = listOf(
         "settings put global window_animation_scale 0.15",
         "settings put global transition_animation_scale 0.15",
         "settings put global animator_duration_scale 0.15"
     )
-    private val PHASE_DISPLAY = listOf(
+    private val PHASE_DISPLAY_BOOST = listOf(
         "settings put secure min_refresh_rate 120.0",
         "settings put secure peak_refresh_rate 120.0",
         "settings put system min_refresh_rate 120.0",
@@ -22,159 +23,185 @@ object OptimizationEngine {
         "settings put global high_refresh_rate_blacklist ''",
         "settings put system pointer_speed 7"
     )
-    private val PHASE_PERFORMANCE = listOf(
+    private val PHASE_PERFORMANCE_BOOST = listOf(
         "cmd power set-fixed-performance-mode-enabled true",
         "settings put global low_power 0",
         "settings put global adaptive_battery_management_enabled 0",
         "settings put global adaptive_battery_management 0",
         "settings put global app_standby_enabled 0"
     )
-    private val PHASE_CACHE = listOf(
+    private val PHASE_CACHE_BOOST = listOf(
         "settings put global activity_manager_constants max_cached_processes=64"
     )
-    private val PHASE_GPU = listOf(
-        "setprop debug.hwui.renderer skiagl",
-        "setprop debug.egl.hw 1",
-        "logcat -G 16M"
+
+    // ═══ RESTORE SETTINGS (Android Defaults) ═══
+    private val PHASE_ANIMATIONS_RESTORE = listOf(
+        "settings put global window_animation_scale 1.0",
+        "settings put global transition_animation_scale 1.0",
+        "settings put global animator_duration_scale 1.0"
     )
-    private val PHASE_STEALTH = listOf(
-        "settings put global development_settings_enabled 0",
-        "settings put global adb_enabled 1"
+    private val PHASE_DISPLAY_RESTORE = listOf(
+        "settings delete secure min_refresh_rate",
+        "settings delete secure peak_refresh_rate",
+        "settings delete system min_refresh_rate",
+        "settings delete system peak_refresh_rate",
+        "settings put system pointer_speed 0"
     )
-    private val HONOR_DEBLOAT = listOf(
-        "com.hihonor.browserhomepage", "com.hihonor.android.totemweather",
-        "com.hihonor.searchservice", "com.hihonor.awareness",
-        "com.hihonor.msdp", "com.hihonor.visionengine", "com.hihonor.magicvoice"
+    private val PHASE_PERFORMANCE_RESTORE = listOf(
+        "cmd power set-fixed-performance-mode-enabled false",
+        "settings put global low_power 0",
+        "settings put global adaptive_battery_management_enabled 1",
+        "settings put global app_standby_enabled 1"
+    )
+    private val PHASE_CACHE_RESTORE = listOf(
+        "settings delete global activity_manager_constants"
+    )
+
+    private val PHASE_STEALTH_RESTORE = listOf(
+        "settings put global development_settings_enabled 1"
     )
 
     /**
-     * @param onProgress  (message, progressFloat 0..1)
+     * Professional Detection: Combines binder ping + active shell command execution.
      */
-    fun executeHyperAcceleration(
-        onProgress: (String, Float) -> Unit,
-        onComplete: () -> Unit
-    ) {
+    fun isShizukuFunctional(): Boolean {
+        return try {
+            val binderAlive = try { rikka.shizuku.Shizuku.pingBinder() } catch (e: Exception) { false }
+            if (!binderAlive) return false
+            
+            val output = runShellCommandWithOutput("echo 1").trim()
+            output == "1"
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    fun executeHyperAcceleration(onProgress: (String, Float) -> Unit, onComplete: () -> Unit) {
         Thread {
             try {
-                val totalPhases = 8f // animation, display, perf, cache, gpu, debloat, aot, stealth+trim
-                var phase = 0f
+                val totalSteps = 8f
+                var current = 0f
 
-                // Phase 1: Animations
-                onProgress("⚡ ANIMACIONES 0.15x", phase / totalPhases)
-                PHASE_ANIMATIONS.forEach { runShellCommand(it) }
-                phase++
+                onProgress("⚡ APLICANDO ANIMACIONES (0.15x)", current++ / totalSteps)
+                PHASE_ANIMATIONS_BOOST.forEach { runShellCommand(it) }
 
-                // Phase 2: Display
-                onProgress("📺 DISPLAY MAX Hz + TÁCTIL", phase / totalPhases)
-                PHASE_DISPLAY.forEach { runShellCommand(it) }
-                phase++
+                onProgress("📺 MAXIMIZANDO REFRESH RATE", current++ / totalSteps)
+                PHASE_DISPLAY_BOOST.forEach { runShellCommand(it) }
 
-                // Phase 3: Performance
-                onProgress("🔥 CPU/GPU AL 100%", phase / totalPhases)
-                PHASE_PERFORMANCE.forEach { runShellCommand(it) }
-                phase++
+                onProgress("🔥 MODO RENDIMIENTO FIJO", current++ / totalSteps)
+                PHASE_PERFORMANCE_BOOST.forEach { runShellCommand(it) }
 
-                // Phase 4: Cache
-                onProgress("💾 CACHÉ x64 PROCESOS", phase / totalPhases)
-                PHASE_CACHE.forEach { runShellCommand(it) }
-                phase++
+                onProgress("💾 EXPANSIÓN DE CACHÉ", current++ / totalSteps)
+                PHASE_CACHE_BOOST.forEach { runShellCommand(it) }
 
-                // Phase 5: GPU
-                onProgress("🎮 GPU SKIAGL", phase / totalPhases)
-                PHASE_GPU.forEach { runShellCommand(it) }
-                phase++
+                onProgress("🎮 OPTIMIZANDO RENDER GPU", current++ / totalSteps)
+                runShellCommand("setprop debug.hwui.renderer skiagl")
+                runShellCommand("setprop debug.egl.hw 1")
 
-                // Phase 6: Debloat (conditional)
                 if (Build.MANUFACTURER.contains("HONOR", ignoreCase = true)) {
-                    onProgress("📱 OPTIMIZANDO MagicOS...", phase / totalPhases)
-                    HONOR_DEBLOAT.forEach { runShellCommand("pm disable-user --user 0 $it") }
+                    onProgress("📱 OPTIMIZANDO MagicOS...", current / totalSteps)
+                    listOf("com.hihonor.browserhomepage", "com.hihonor.android.totemweather").forEach { 
+                        runShellCommand("pm disable-user --user 0 $it")
+                    }
                 }
-                phase++
+                current++
 
-                // Phase 7: AOT — REAL per-package progress
-                onProgress("⏳ AOT: Listando paquetes...", phase / totalPhases)
-                val packages = getInstalledPackages()
-                val totalPkgs = packages.size.coerceAtLeast(1)
-                packages.forEachIndexed { index, pkg ->
-                    val aotBase = phase / totalPhases
-                    val aotProgress = aotBase + ((index + 1).toFloat() / totalPkgs) * (1f / totalPhases)
-                    val percent = ((index + 1) * 100) / totalPkgs
-                    onProgress("⏳ AOT: $percent% — ${pkg.takeLast(30)}", aotProgress)
-                    runShellCommand("cmd package compile -m speed $pkg")
-                }
-                phase++
+                onProgress("⏳ AOT COMPILATION (PORCENTUAL)...", current++ / totalSteps)
+                runAotCompilation(onProgress, 6f/totalSteps, 1f/totalSteps)
 
-                // Phase 8: FSTRIM + Stealth
-                onProgress("💿 FSTRIM + STEALTH MODE", phase / totalPhases)
+                onProgress("🔒 STEALTH MODE ACTIVADO", current / totalSteps)
+                runShellCommand("settings put global development_settings_enabled 0")
                 runShellCommand("sm fstrim")
-                PHASE_STEALTH.forEach { runShellCommand(it) }
 
-                onProgress("✅ PROTOCOLO COMPLETADO", 1f)
-                Thread.sleep(500)
+                onProgress("✅ ACELERACIÓN COMPLETADA", 1f)
+                Thread.sleep(800)
                 onComplete()
-
             } catch (e: Exception) {
-                Log.e(TAG, "Error", e)
-                onProgress("ERROR: ${e.localizedMessage}", 0f)
+                onProgress("❌ ERROR CRÍTICO", 0f)
             }
         }.start()
     }
 
-    /**
-     * Lists all installed packages via `pm list packages`
-     * Returns a real count per-device for accurate AOT progress
-     */
+    fun executeRestoration(onProgress: (String, Float) -> Unit, onComplete: () -> Unit) {
+        Thread {
+            try {
+                val total = 5f
+                var step = 0f
+
+                onProgress("🔄 RESTAURANDO ANIMACIONES", step++ / total)
+                PHASE_ANIMATIONS_RESTORE.forEach { runShellCommand(it) }
+
+                onProgress("🔄 RESTAURANDO DISPLAY", step++ / total)
+                PHASE_DISPLAY_RESTORE.forEach { runShellCommand(it) }
+
+                onProgress("🔄 RESTAURANDO ENERGÍA", step++ / total)
+                PHASE_PERFORMANCE_RESTORE.forEach { runShellCommand(it) }
+
+                onProgress("🔄 RESTAURANDO CACHÉ", step++ / total)
+                PHASE_CACHE_RESTORE.forEach { runShellCommand(it) }
+
+                onProgress("🔄 RESETEANDO STEALTH", step++ / total)
+                PHASE_STEALTH_RESTORE.forEach { runShellCommand(it) }
+
+                onProgress("✅ SISTEMA RESTAURADO", 1f)
+                Thread.sleep(800)
+                onComplete()
+            } catch (e: Exception) {
+                onProgress("❌ ERROR EN RESTAURACIÓN", 0f)
+            }
+        }.start()
+    }
+
+    private fun runAotCompilation(onProgress: (String, Float) -> Unit, startProgress: Float, weight: Float) {
+        val packages = getInstalledPackages()
+        val total = packages.size.coerceAtLeast(1)
+        packages.forEachIndexed { index, pkg ->
+            val p = startProgress + (index.toFloat() / total) * weight
+            val percent = (index * 100) / total
+            onProgress("⏳ AOT COMPILATION ($percent%): $pkg", p)
+            runShellCommand("cmd package compile -m speed $pkg")
+        }
+    }
+
     private fun getInstalledPackages(): List<String> {
-        return try {
-            val output = runShellCommandWithOutput("pm list packages")
-            output.lines()
-                .filter { it.startsWith("package:") }
-                .map { it.removePrefix("package:").trim() }
-                .filter { it.isNotEmpty() }
+        val output = runShellCommandWithOutput("pm list packages")
+        return output.lines().filter { it.startsWith("package:") }.map { it.substringAfter("package:").trim() }
+    }
+
+    private fun runShellCommand(cmd: String) {
+        try {
+            val process = newShizukuProcess(arrayOf("sh", "-c", cmd))
+            process?.waitFor()
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to list packages: ${e.message}")
-            emptyList()
+            Log.e(TAG, "CMD Fail: $cmd", e)
         }
     }
 
     private fun runShellCommandWithOutput(cmd: String): String {
         return try {
-            val shizukuClass = rikka.shizuku.Shizuku::class.java
-            val method = shizukuClass.getDeclaredMethod(
-                "newProcess",
-                Array<String>::class.java, Array<String>::class.java, String::class.java
-            )
-            method.isAccessible = true
-            val process = method.invoke(null, arrayOf("sh", "-c", cmd), null, null)
-
-            val getInputStream = process.javaClass.getMethod("getInputStream")
-            val inputStream = getInputStream.invoke(process) as java.io.InputStream
-            val reader = BufferedReader(InputStreamReader(inputStream))
-            val result = reader.readText()
-            reader.close()
-
-            val waitFor = process.javaClass.getMethod("waitFor")
-            waitFor.invoke(process)
-            result
+            val process = newShizukuProcess(arrayOf("sh", "-c", cmd)) ?: return ""
+            val reader = BufferedReader(InputStreamReader(process.inputStream))
+            val output = reader.readText()
+            process.waitFor()
+            output
         } catch (e: Exception) {
-            Log.e(TAG, "Shell output error: ${e.message}")
             ""
         }
     }
 
-    private fun runShellCommand(cmd: String) {
-        try {
-            val shizukuClass = rikka.shizuku.Shizuku::class.java
-            val method = shizukuClass.getDeclaredMethod(
-                "newProcess",
-                Array<String>::class.java, Array<String>::class.java, String::class.java
-            )
+    /**
+     * Professional Reflection Wrapper for Shizuku process creation.
+     * Prevents issues with private/protected methods across different versions.
+     */
+    private fun newShizukuProcess(cmd: Array<String>): java.lang.Process? {
+        return try {
+            val clazz = Class.forName("rikka.shizuku.Shizuku")
+            val method = clazz.getDeclaredMethod("newProcess", Array<String>::class.java, Array<String>::class.java, String::class.java)
             method.isAccessible = true
-            val process = method.invoke(null, arrayOf("sh", "-c", cmd), null, null)
-            val waitFor = process.javaClass.getMethod("waitFor")
-            waitFor.invoke(process)
+            method.invoke(null, cmd, null, null) as? java.lang.Process
         } catch (e: Exception) {
-            Log.e(TAG, "Shell error: ${e.message}")
+            Log.e(TAG, "Process Creation Failed", e)
+            null
         }
     }
 }
